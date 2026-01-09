@@ -3,12 +3,18 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+# ALWAYS add CORS first
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=False,
+    allow_origins=[
+        "http://localhost:5173",
+        "https://policy-impact-dashboard.vercel.app",
+        "https://policy-impact-dashboard-ui.vercel.app",
+        "https://policy-impact-dashboard-by-harsh-pandav.onrender.com",
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
+    allow_credentials=True,
 )
 
 POLICIES = [
@@ -19,22 +25,10 @@ POLICIES = [
 ]
 
 IMPACTS = {
-    1: {
-        "Economy": {"effect": "Boost", "detail": "Unified tax improved compliance"},
-        "Business": {"effect": "Growth", "detail": "Simplified interstate trade"},
-    },
-    2: {
-        "Technology": {"effect": "Expansion", "detail": "Digital infrastructure growth"},
-        "Governance": {"effect": "Uplift", "detail": "Online services adoption"},
-    },
-    3: {
-        "Manufacturing": {"effect": "Rise", "detail": "FDI inflow increased"},
-        "Jobs": {"effect": "Growth", "detail": "Employment generation"},
-    },
-    4: {
-        "Startups": {"effect": "Boost", "detail": "Funding & incubation support"},
-        "Innovation": {"effect": "Expansion", "detail": "New tech ventures"},
-    },
+    1: {"Economy": {"effect": "Boost", "detail": "Unified tax improved compliance"}},
+    2: {"Technology": {"effect": "Expansion", "detail": "Digital infrastructure growth"}},
+    3: {"Manufacturing": {"effect": "Rise", "detail": "FDI inflow increased"}},
+    4: {"Startups": {"effect": "Boost", "detail": "Funding support"}},
 }
 
 @app.get("/")
