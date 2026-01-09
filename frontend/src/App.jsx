@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
-const API = "https://policy-impact-api.onrender.com";
+/* ✅ CORRECT LIVE BACKEND */
+const API = "https://policy-impact-dashboard-by-harsh-pandav.onrender.com";
 
 export default function App() {
   const [policies, setPolicies] = useState([]);
@@ -16,32 +17,23 @@ export default function App() {
 
   const [dark, setDark] = useState(false);
 
-  /* ================= FETCH POLICIES ================= */
+  /* ================= LOAD POLICIES ================= */
   useEffect(() => {
     fetch(`${API}/policies`)
       .then(res => res.json())
-      .then(data => setPolicies(data))
-      .catch(err => {
-        console.error("Failed to load policies", err);
-        setPolicies([]);
-      });
+      .then(data => {
+        console.log("POLICIES:", data);
+        setPolicies(data);
+      })
+      .catch(err => console.error(err));
   }, []);
 
-  /* ================= FETCH IMPACT ================= */
+  /* ================= LOAD IMPACT ================= */
   const fetchImpact = async (id, setter) => {
-    if (!id) {
-      setter(null);
-      return;
-    }
-
-    try {
-      const res = await fetch(`${API}/policy/${id}/impact`);
-      const data = await res.json();
-      setter(data.impact);
-    } catch (err) {
-      console.error("Impact fetch failed", err);
-      setter(null);
-    }
+    if (!id) return setter(null);
+    const res = await fetch(`${API}/policy/${id}/impact`);
+    const data = await res.json();
+    setter(data.impact);
   };
 
   /* ================= THEME ================= */
@@ -49,80 +41,42 @@ export default function App() {
   const card = dark ? "#020617" : "#ffffff";
   const text = dark ? "#e5e7eb" : "#111827";
   const muted = dark ? "#94a3b8" : "#475569";
-
   const positive = ["Growth", "Boost", "Rise", "Expansion", "Uplift", "Eased"];
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: bg,
-        color: text,
-        fontFamily: "Inter, system-ui"
-      }}
-    >
-      {/* ================= HEADER ================= */}
-      <div
-        style={{
-          padding: "50px",
-          background: dark
-            ? "linear-gradient(135deg, #020617, #020617)"
-            : "linear-gradient(135deg, #0f2027, #2c5364)",
-          borderBottomLeftRadius: "40px",
-          borderBottomRightRadius: "40px"
-        }}
-      >
-        <h1 style={{ fontSize: "42px", marginBottom: "8px" }}>
-          📊 Public Policy Impact Dashboard
-        </h1>
-        <p style={{ opacity: 0.85 }}>
-          Executive-style policy analysis and comparison
-        </p>
+    <div style={{ minHeight: "100vh", background: bg, color: text }}>
 
-        <div style={{ marginTop: "25px", display: "flex", gap: "16px" }}>
-          <button
-            onClick={() => setMode("single")}
-            style={{
-              padding: "10px 16px",
-              borderRadius: "10px",
-              border: "none",
-              cursor: "pointer",
-              background: mode === "single" ? "#22c55e" : "#e5e7eb"
-            }}
-          >
+      {/* ================= HEADER ================= */}
+      <div style={{
+        padding: 50,
+        background: "linear-gradient(135deg, #0f2027, #2c5364)",
+        borderBottomLeftRadius: 40,
+        borderBottomRightRadius: 40
+      }}>
+        <h1 style={{ fontSize: 42 }}>📊 Public Policy Impact Dashboard</h1>
+        <p>Executive-style policy analysis and comparison</p>
+
+        <div style={{ marginTop: 20, display: "flex", gap: 16 }}>
+          <button onClick={() => setMode("single")}
+            style={{ background: mode === "single" ? "#22c55e" : "#e5e7eb" }}>
             Single Policy
           </button>
 
-          <button
-            onClick={() => setMode("compare")}
-            style={{
-              padding: "10px 16px",
-              borderRadius: "10px",
-              border: "none",
-              cursor: "pointer",
-              background: mode === "compare" ? "#22c55e" : "#e5e7eb"
-            }}
-          >
+          <button onClick={() => setMode("compare")}
+            style={{ background: mode === "compare" ? "#22c55e" : "#e5e7eb" }}>
             Compare Policies
           </button>
 
-          <button
-            onClick={() => setDark(!dark)}
-            style={{
-              padding: "10px 16px",
-              borderRadius: "10px",
-              border: "none",
-              cursor: "pointer"
-            }}
-          >
+          <button onClick={() => setDark(!dark)}>
             {dark ? "☀ Light" : "🌙 Dark"}
           </button>
         </div>
       </div>
 
       {/* ================= BODY ================= */}
-      <div style={{ maxWidth: "1200px", margin: "auto", padding: "50px" }}>
-        {/* ---------- SINGLE POLICY ---------- */}
+      <div style={{ maxWidth: 1200, margin: "auto", padding: 50 }}>
+
+        {/* ===== SINGLE POLICY ===== */}
         {mode === "single" && (
           <>
             <select
@@ -130,12 +84,6 @@ export default function App() {
               onChange={e => {
                 setSelected(e.target.value);
                 fetchImpact(e.target.value, setImpact);
-              }}
-              style={{
-                padding: "14px",
-                borderRadius: "12px",
-                border: "1px solid #cbd5f5",
-                minWidth: "320px"
               }}
             >
               <option value="">Select a policy</option>
@@ -147,44 +95,26 @@ export default function App() {
             </select>
 
             {impact && (
-              <div
-                style={{
-                  marginTop: "40px",
-                  display: "grid",
-                  gridTemplateColumns:
-                    "repeat(auto-fit, minmax(240px, 1fr))",
-                  gap: "24px"
-                }}
-              >
+              <div style={{
+                marginTop: 40,
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(240px,1fr))",
+                gap: 24
+              }}>
                 {Object.entries(impact).map(([k, v]) => (
-                  <div
-                    key={k}
-                    style={{
-                      background: card,
-                      padding: "25px",
-                      borderRadius: "18px",
-                      boxShadow: "0 15px 30px rgba(0,0,0,0.08)"
-                    }}
-                  >
-                    <div style={{ fontSize: "14px", color: muted }}>{k}</div>
-                    <div
-                      style={{
-                        fontSize: "28px",
-                        fontWeight: 600,
-                        color: positive.includes(v.effect)
-                          ? "#22c55e"
-                          : "#ef4444"
-                      }}
-                    >
+                  <div key={k} style={{
+                    background: card,
+                    padding: 25,
+                    borderRadius: 18
+                  }}>
+                    <div style={{ color: muted }}>{k}</div>
+                    <div style={{
+                      fontSize: 26,
+                      color: positive.includes(v.effect) ? "#22c55e" : "#ef4444"
+                    }}>
                       {v.effect}
                     </div>
-                    <div
-                      style={{
-                        fontSize: "14px",
-                        marginTop: "6px",
-                        color: muted
-                      }}
-                    >
+                    <div style={{ fontSize: 14, color: muted }}>
                       {v.detail}
                     </div>
                   </div>
@@ -194,15 +124,49 @@ export default function App() {
           </>
         )}
 
-        {/* ================= FOOTER ================= */}
-        <div
-          style={{
-            marginTop: "80px",
-            textAlign: "center",
-            fontSize: "14px",
-            opacity: 0.6
-          }}
-        >
+        {/* ===== COMPARISON MODE ===== */}
+        {mode === "compare" && (
+          <>
+            <div style={{ display: "flex", gap: 20 }}>
+              <select onChange={e => {
+                setA(e.target.value);
+                fetchImpact(e.target.value, setImpactA);
+              }}>
+                <option value="">Policy A</option>
+                {policies.map(p => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+
+              <select onChange={e => {
+                setB(e.target.value);
+                fetchImpact(e.target.value, setImpactB);
+              }}>
+                <option value="">Policy B</option>
+                {policies.map(p => (
+                  <option key={p.id} value={p.id}>{p.name}</option>
+                ))}
+              </select>
+            </div>
+
+            {impactA && impactB && (
+              <div style={{ marginTop: 40, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 30 }}>
+                {[impactA, impactB].map((imp, i) => (
+                  <div key={i} style={{ background: card, padding: 30, borderRadius: 20 }}>
+                    <h3>{i === 0 ? "Policy A" : "Policy B"}</h3>
+                    {Object.entries(imp).map(([k, v]) => (
+                      <p key={k}>
+                        <b>{k}</b>: {v.effect} — {v.detail}
+                      </p>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
+        )}
+
+        <div style={{ marginTop: 80, textAlign: "center", opacity: 0.6 }}>
           Built by <strong>Harsh S. Pandav</strong>
         </div>
       </div>
