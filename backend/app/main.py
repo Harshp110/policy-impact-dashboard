@@ -1,16 +1,17 @@
-from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI(title="Public Policy Impact Analysis API")
-
-# CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[
+        "http://localhost:5173",
+        "https://policy-impact-dashboard-ui.vercel.app",
+        "https://policy-impact-dashboard-*.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 POLICIES = [
     {"id": 1, "name": "Fuel Price Revision", "year": 2022, "description": "Fuel price hike due to global oil markets"},
