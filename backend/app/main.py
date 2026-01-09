@@ -2,8 +2,13 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # IMPORTANT: allow all for now
-    allow_credentials=False,
+    allow_origins=[
+        "https://policy-impact-dashboard.vercel.app",
+        "https://policy-impact-dashboard-ui.vercel.app",
+        "https://policy-impact-dashboard-by-harsh-pandav.onrender.com",
+        "http://localhost:5173",
+    ],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
