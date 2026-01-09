@@ -3,104 +3,49 @@ from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
+# ✅ CORS — MUST be right after app creation
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        "http://localhost:5173",
         "https://policy-impact-dashboard.vercel.app",
         "https://policy-impact-dashboard-ui.vercel.app",
         "https://policy-impact-dashboard-by-harsh-pandav.onrender.com",
-        "http://localhost:5173",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# ------------------ MOCK DATA ------------------
 
-
-POLICIES = [
-    {"id": 1, "name": "Fuel Price Revision", "year": 2022, "description": "Fuel price hike due to global oil markets"},
-    {"id": 2, "name": "GST Rate Change", "year": 2021, "description": "GST reduction on essential goods"},
-    {"id": 3, "name": "Minimum Wage Revision", "year": 2020, "description": "Increase in minimum wage"},
-    {"id": 4, "name": "Corporate Tax Cut", "year": 2019, "description": "Tax reduction to boost investments"},
-    {"id": 5, "name": "Infrastructure Push", "year": 2023, "description": "Increased spending on public infrastructure"},
-    {"id": 6, "name": "Employment Guarantee Expansion", "year": 2021, "description": "Expanded rural employment scheme"},
+policies = [
+    {"id": 1, "name": "GST Reform", "year": 2017},
+    {"id": 2, "name": "Digital India", "year": 2015},
+    {"id": 3, "name": "Make in India", "year": 2014},
+    {"id": 4, "name": "Startup India", "year": 2016},
 ]
 
-IMPACT_DATA = {
+impacts = {
     1: {
-        "Inflation": {
-            "effect": "Surge",
-            "detail": "Fuel cost increase caused cost-push inflation across goods",
-        },
-        "Transport": {
-            "effect": "Spike",
-            "detail": "Higher diesel prices raised logistics and freight charges",
-        },
-        "Spending": {
-            "effect": "Dip",
-            "detail": "Households reduced discretionary spending",
-        },
+        "Economy": {"effect": "Boost", "detail": "Unified tax improved compliance"},
+        "Business": {"effect": "Growth", "detail": "Easier interstate trade"},
     },
     2: {
-        "Inflation": {
-            "effect": "Eased",
-            "detail": "Lower GST reduced prices of essential commodities",
-        },
-        "Revenue": {
-            "effect": "Uplift",
-            "detail": "Improved compliance increased indirect tax collection",
-        },
-        "Spending": {
-            "effect": "Boost",
-            "detail": "Consumers responded positively to lower prices",
-        },
+        "Technology": {"effect": "Expansion", "detail": "Digital infrastructure growth"},
+        "Governance": {"effect": "Uplift", "detail": "E-services adoption"},
     },
     3: {
-        "Employment": {
-            "effect": "Increase",
-            "detail": "Higher minimum wages improved worker income security",
-        },
-        "Inflation": {
-            "effect": "Mild Rise",
-            "detail": "Increased labor costs slightly raised service prices",
-        },
+        "Manufacturing": {"effect": "Rise", "detail": "FDI inflow increased"},
+        "Jobs": {"effect": "Growth", "detail": "Employment generation"},
     },
     4: {
-        "Investment": {
-            "effect": "Boost",
-            "detail": "Lower corporate tax improved capital expenditure",
-        },
-        "Revenue": {
-            "effect": "Short-term Dip",
-            "detail": "Initial reduction in tax collections",
-        },
-    },
-    5: {
-        "Employment": {
-            "effect": "Growth",
-            "detail": "Large-scale infrastructure projects created jobs",
-        },
-        "GDP": {
-            "effect": "Expansion",
-            "detail": "Capital expenditure stimulated economic activity",
-        },
-        "Fiscal Deficit": {
-            "effect": "Widened",
-            "detail": "Higher public spending increased fiscal pressure",
-        },
-    },
-    6: {
-        "Employment": {
-            "effect": "Expansion",
-            "detail": "Rural job guarantees absorbed seasonal unemployment",
-        },
-        "Spending": {
-            "effect": "Stabilized",
-            "detail": "Income support sustained rural consumption",
-        },
+        "Startups": {"effect": "Boost", "detail": "Funding & incubation support"},
+        "Innovation": {"effect": "Expansion", "detail": "New tech ventures"},
     },
 }
+
+# ------------------ ROUTES ------------------
 
 @app.get("/")
 def root():
@@ -108,11 +53,8 @@ def root():
 
 @app.get("/policies")
 def get_policies():
-    return POLICIES
+    return policies
 
 @app.get("/policy/{policy_id}/impact")
 def get_policy_impact(policy_id: int):
-    return {
-        "policy_id": policy_id,
-        "impact": IMPACT_DATA.get(policy_id, {}),
-    }
+    return {"impact": impacts.get(policy_id, {})}
