@@ -15,14 +15,15 @@ export default function App() {
   const [dark, setDark] = useState(false);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/policies")
+    fetch("https://policy-impact-api.onrender.com")
       .then(res => res.json())
       .then(setPolicies);
   }, []);
 
   const fetchImpact = async (id, setter) => {
     if (!id) return setter(null);
-    const res = await fetch(`http://127.0.0.1:8000/policy/${id}/impact`);
+    const res = await fetch(`https://policy-impact-api.onrender.com
+/${id}/impact`);
     const data = await res.json();
     setter(data.impact);
   };
